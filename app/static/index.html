@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Juntar PDFs</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div>
+        <h1>Juntar PDFs</h1>
+        <p>Junte PDFs, fotos e documentos do Word, Excel e PowerPoint em um arquivo só. Aceita arquivos de vários gigabytes.</p>
+      </div>
+      <img class="header-photo" src="foto.jpg" width="720" height="811" alt="Duas pessoas sorrindo em frente a uma estante de livros">
+    </header>
+
+    <section id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Escolher arquivos">
+      <input id="file-input" type="file" multiple hidden>
+      <svg class="dropzone-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" /></svg>
+      <strong>Arraste os arquivos para cá</strong>
+      <span>ou clique para escolher no computador</span>
+      <span id="formats" class="formats"></span>
+    </section>
+
+    <section id="files-section" class="card" hidden>
+      <div class="toolbar">
+        <div id="summary" class="summary"></div>
+        <div class="toolbar-actions">
+          <button id="sort-btn" class="btn ghost" type="button">Ordenar por nome</button>
+          <button id="clear-btn" class="btn ghost danger" type="button">Limpar tudo</button>
+        </div>
+      </div>
+      <div class="overall">
+        <div class="bar"><div id="overall-bar" class="fill"></div></div>
+        <span id="overall-text" class="muted"></span>
+      </div>
+      <ol id="file-list" class="file-list"></ol>
+      <p class="muted hint">A ordem da lista é a ordem das páginas no PDF final. Arraste os itens ou use as setas para reorganizar.</p>
+    </section>
+
+    <section id="merge-section" class="card" hidden>
+      <label for="output-name">Nome do arquivo final</label>
+      <input id="output-name" type="text" value="documento-unido.pdf" autocomplete="off">
+
+      <label for="compression">Tamanho do arquivo final</label>
+      <div class="merge-row">
+        <select id="compression">
+          <option value="original" selected>Qualidade original (compacta sem perder nada)</option>
+          <option value="imagens">Arquivo menor (recomprime as imagens)</option>
+        </select>
+        <button id="merge-btn" class="btn primary" type="button" disabled>Juntar PDFs</button>
+      </div>
+      <p id="compression-hint" class="muted hint"></p>
+      <div id="job" class="job" hidden>
+        <div class="bar"><div id="job-bar" class="fill"></div></div>
+        <p id="job-text" class="job-text"></p>
+        <div class="job-actions">
+          <a id="download-link" class="btn primary" hidden>Baixar PDF</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <template id="file-template">
+    <li class="file" draggable="true">
+      <span class="handle" aria-hidden="true">⠿</span>
+      <span class="position"></span>
+      <div class="file-body">
+        <div class="file-line">
+          <span class="file-name"></span>
+          <span class="file-meta muted"></span>
+        </div>
+        <div class="bar small"><div class="fill"></div></div>
+        <div class="file-status muted"></div>
+      </div>
+      <div class="file-actions">
+        <button class="icon up" type="button" title="Mover para cima" aria-label="Mover para cima">↑</button>
+        <button class="icon down" type="button" title="Mover para baixo" aria-label="Mover para baixo">↓</button>
+        <button class="icon retry" type="button" title="Tentar de novo" aria-label="Tentar de novo" hidden>↻</button>
+        <button class="icon remove" type="button" title="Remover" aria-label="Remover">✕</button>
+      </div>
+    </li>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

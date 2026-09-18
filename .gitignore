@@ -1,0 +1,10 @@
+# Arquivos enviados, resultados e logs gerados em execução
+dados/
+
+# Ambiente virtual e cache do Python
+.venv/
+__pycache__/
+*.pyc
+
+# cloudflared baixado pelo compartilhar.sh
+.bin/
