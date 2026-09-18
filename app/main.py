@@ -223,7 +223,8 @@ class AccessKeyMiddleware:
         self.app = app
 
     async def __call__(self, scope, receive, send):
-        if scope["type"] != "http" or not ACCESS_KEY:
+        # /saude fica aberta: o Render e o agendamento que mantém o serviço acordado não têm a chave.
+        if scope["type"] != "http" or not ACCESS_KEY or scope["path"] == "/saude":
             return await self.app(scope, receive, send)
         request = Request(scope)
         if same_secret(request.cookies.get(ACCESS_COOKIE, ""), ACCESS_KEY):
@@ -245,6 +246,12 @@ class AccessKeyMiddleware:
 
 
 app.add_middleware(AccessKeyMiddleware)
+
+
+@app.get("/saude")
+async def health():
+    """Resposta leve para conferir se o servidor está no ar."""
+    return {"ok": True}
 
 
 # ---------------------------------------------------------------- envios

@@ -47,6 +47,24 @@ Sobe um servidor separado (porta 8001) e um túnel gratuito da Cloudflare, e mos
 - Para carregar uma atualização do sistema sem trocar o link: `kill $(cat dados/servidor.pid)` (o servidor sobe de novo sozinho)
 - A velocidade de envio para quem usa de fora depende da internet deste computador.
 
+## Hospedar no Render
+
+Crie um **Web Service** apontando para este repositório, com:
+
+- Build command: `pip install -r requirements.txt`
+- Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT --timeout-keep-alive 75`
+- Health check path: `/saude`
+- Variável de ambiente `PDF_CHAVE_ACESSO` com uma chave sua. O endereço do Render é público; sem a chave, qualquer pessoa entra. O link para compartilhar fica `https://seu-servico.onrender.com/?chave=SUA_CHAVE`.
+
+No plano gratuito:
+
+- O serviço dorme depois de 15 minutos sem acesso. O workflow `.github/workflows/manter-acordado.yml` acessa `/saude` a cada 10 minutos para impedir isso. Para ligar, crie a variável `RENDER_URL` no GitHub (Settings > Secrets and variables > Actions > Variables) com o endereço do Render. Para testar na hora, use o botão **Run workflow** na aba Actions.
+- O plano dá 750 horas por mês. Um serviço acordado o mês todo gasta cerca de 744, então sobra pouco para outro serviço gratuito na mesma conta.
+- O GitHub pode atrasar execuções agendadas em horários de pico, e desativa o agendamento depois de 60 dias sem commits no repositório. Se isso acontecer, reative na aba Actions.
+- Não há disco permanente: os arquivos enviados e os PDFs prontos se perdem sempre que o serviço reinicia ou recebe um deploy novo.
+- A máquina tem 512 MB de memória. Juntar PDFs grandes funciona, mas a opção **Arquivo menor** com imagens muito grandes pode estourar a memória.
+- O LibreOffice não vem instalado, então Word, Excel e PowerPoint são recusados. PDFs e imagens funcionam.
+
 ## Configuração (variáveis de ambiente)
 
 | Variável | Padrão | Para que serve |

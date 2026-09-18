@@ -1,0 +1,28 @@
+# Acessa o sistema no Render a cada 10 minutos. No plano gratuito, o Render
+# desliga o serviço depois de 15 minutos sem nenhum acesso.
+#
+# O endereço fica em uma variável do repositório (não precisa mexer aqui):
+#   Settings > Secrets and variables > Actions > Variables > New repository variable
+#   Nome: RENDER_URL    Valor: https://seu-servico.onrender.com
+name: Manter acordado
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: # botão "Run workflow", para testar na hora
+
+jobs:
+  cutucar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Acessar /saude
+        env:
+          RENDER_URL: ${{ vars.RENDER_URL }}
+        run: |
+          if [ -z "$RENDER_URL" ]; then
+            echo "::warning::Defina a variável RENDER_URL do repositório com o endereço do Render."
+            exit 0
+          fi
+          # Se o serviço já estiver dormindo, ele leva por volta de 1 minuto para acordar.
+          curl -fsS --retry 5 --retry-delay 15 --retry-all-errors --max-time 90 "${RENDER_URL%/}/saude"
